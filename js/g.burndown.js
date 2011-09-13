@@ -41,6 +41,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
   var maxAddedPoints = max(added);
   var maxTotalPoints = maxAddedPoints + maxOriginalPoints;
   var availHeight = height - gutter.top - gutter.bottom;
+  var availWidth = width - gutter.left - gutter.right;
   
   var axisPointsMax = Math.ceil(maxOriginalPoints / 5) * 5;
   var axisPointsMin = Math.floor(-maxAddedPoints / 5) * 5;
@@ -55,10 +56,40 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
 
   this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 1);
   this.g.axis(width - gutter.right, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 3);
+  
+  var origo = {
+    x: gutter.left,
+    y: gutter.top + heightOriginal
+  };
+  
   this.path(new Path()
-    .M(gutter.left, gutter.top + heightOriginal)
-    .L(width - gutter.right, gutter.top + heightOriginal)
+    .M(origo.x, origo.y)
+    .L(width - gutter.right, origo.y)
   );
+  
+  var dx = availWidth/dates.length;
+  
+  for (var i=0, d, x; (d=dates[i]) && (x=gutter.left+i*dx); i++) {
+    // Text
+    var text = this.text(x+dx/2, height-40, d);
+    text.rotate(31).attr({
+      'font-size': '12px'
+    });
+    
+    if (i === 0) continue;
+    
+    // Line
+    this.path(new Path().M(x, gutter.top).L(x, height - gutter.bottom)).attr({
+      opacity: .5
+    });
+  }
+  
+  var lines = this.set();
+  for (var i=0, data; data=original[i]; i++) {
+    var p = new Path().M(dx/2, );
+    for (var j=0, val; val=data[j]; j++)
+      
+  }
     
 return chart;
 
