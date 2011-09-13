@@ -1,0 +1,36 @@
+Id;Titel;Originalpoäng;Kvarvarande poäng;Status;Typ
+7;;3;3;Ej klar;User story
+43;;1;1;Ej klar;User story
+4;;1;1;Ej klar;User story
+11;;1;1;Ej klar;User story
+2;;1;1;Ej klar;User story
+13;;1;1;Ej klar;User story
+41;;1;1;Ej klar;User story
+42;;1;1;Ej klar;User story
+6;;1;1;Ej klar;User story
+40;;1;1;Ej klar;User story
+14;Typografi, rubriknivåer, brödtext, kägel etc.;13;13;Ej klar;User story
+15;Typografi, kopiera smoothing check från xPub;1;1;Ej klar;User story
+19;Typografi, fallback på standardtypsnitt;5;5;Ej klar;User story
+44;Ej implementerat rutan;1;1;Ej klar;User story
+16;Målgruppsanpassade banners från webparts.;5;5;Ej klar;User story
+12;Målgruppsanpassade topbanners (ämnessidor);5;5;Ej klar;User story
+5;Inget navigations-UI om bara en banner;1;1;Ej klar;User story
+8;Relevanta banners / dummies på startsida;3;3;Ej klar;User story
+10;"""Kompetensutveckling"" i huvudmenyn";3;3;Ej klar;User story
+9;Paginering på ämnessidor;8;8;Ej klar;User story
+18;Loginruta med val lärare/elev/författare;5;5;Ej klar;User story
+17;Mina sidor dropdown, koppla länkar;2;2;Ej klar;User story
+46;Bugg i TOC importen;3;3;Ej klar;User story
+45;Styling av TOC;3;3;Ej klar;User story
+3;Skilj ut sista nivån i huvudmenyn (bok ikon);2;2;Ej klar;User story
+46;Huvudmeny aktiv state - allt annat skall dimmas;2;2;Ej klar;User story
+35;Sorting;5;5;Ej klar;User story
+24;Dokumentation av webparts/drupal (debatt);8;8;Ej klar;Developer story
+34;Ta bort klass.js;2;2;Ej klar;Developer story
+37;DomX Selectors, se över;5;5;Ej klar;Developer story
+36;Identifiera all kod/funktioner som behöver återanvändas;20;20;Ej klar;Developer story
+39;Se över hashlogik;8;8;Ej klar;Developer story
+30;Integrera huvudmeny (pcat);8;8;Ej klar;Developer story
+32;Rensa LESS/CSS;13;13;Ej klar;Developer story
+26;Undersök: Aldrig 2 gånger;5;5;Ej klar;Developer story
