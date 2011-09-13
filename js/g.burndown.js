@@ -40,6 +40,9 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
       // orientation: 0:hor,below, 1:ver:left, 2:hor:above, 3: ver:right
   
   this.g.axis(gutter.left, gutter.top + heightOriginal, heightOriginal, 0, maxOriginalY, 0, 1);
+  if (heightAdded) {
+    this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightAdded, 0, -maxAddedY, 0, 1);
+  }
     
 return chart;
 
