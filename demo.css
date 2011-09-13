@@ -1,21 +1,21 @@
 body {
-    background: #999 url(http://raphaeljs.com/images/bgbg.png);
-    font: 100.01% "Fontin Sans", Fontin-Sans, "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, Helvetica, sans-serif;
-    color: #000;
-    margin: 10px 0 0 0;
-    padding: 0;
-    text-align: center;
+  background: #999;
+  font: 100.01% "Fontin Sans", Fontin-Sans, "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, Helvetica, sans-serif;
+  color: #000;
+  margin: 10px 0 0 0;
+  padding: 0;
+  text-align: center;
 }
 #sprint {
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -webkit-box-shadow: 0 1px 3px #666;
-    background: #ddd url(http://raphaeljs.com/images/bg.png);
-    margin: 0 auto;
-    width: 500px;
-    height: 400px;
+  background: #eee;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: 0 1px 3px #666;
+  margin: 0 auto;
+  width: 500px;
+  height: 400px;
 }
 p {
-    text-align: left;
-    margin: .5em 2em;
+  text-align: left;
+  margin: .5em 2em;
 }

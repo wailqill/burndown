@@ -39,7 +39,7 @@ window.addEventListener('load', function () {
   data.nodes.forEach(function(d, i) {
     dates.push(d.date);
     remaining.push(total(d.data.slice(0, countItemsStart), function(p, c) { return p + c.v; }));
-    added.push(-total(d.data.slice(countItemsStart), function(p, c) { return p + c.v; }));
+    added.push(total(d.data.slice(countItemsStart), function(p, c) { return p + c.v; }));
   });
 
   r.g.burndown(0, 0, 500, 400, dates, remaining, added, {});

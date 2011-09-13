@@ -5,7 +5,16 @@
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
 Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, opts) {
-
+  
+  
+  var Path = function() {
+    this.path = "";
+  }
+  Path.prototype.toString = function() { return this.path.substr(1); }
+  Path.prototype.M = function(x, y) { this.path += " M " + x + " " + y; return this; }
+  Path.prototype.L = function(x, y) { this.path += " L " + x + " " + y; return this; }
+  Path.prototype.Z = function() { this.path += " Z"; return this; }
+  
   var max = function(a, f) {
     f = f || function(p, c) {
       return p < c ? c : p;
@@ -18,31 +27,38 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
     }
     return a.reduce(f, 0);
   }
-  
+
   var gutter = {
     top: 10,
-    right: 10,
-    bottom: 50,
-    left: 20
+    right: 30,
+    bottom: 80,
+    left: 30
   };
 
   var chart = this.set();
   
-  var maxOriginalY = max(original);
-  var maxAddedY = max(added);
-  var totalY = maxAddedY + maxOriginalY;
+  var maxOriginalPoints = max(original);
+  var maxAddedPoints = max(added);
+  var maxTotalPoints = maxAddedPoints + maxOriginalPoints;
   var availHeight = height - gutter.top - gutter.bottom;
   
-  var heightOriginal = maxOriginalY !== 0 ? availHeight * (maxOriginalY / totalY) : 0;
-  var heightAdded = maxAddedY !== 0 ? availHeight * (maxAddedY / totalY) : 0;
+  var axisPointsMax = Math.ceil(maxOriginalPoints / 5) * 5;
+  var axisPointsMin = Math.floor(-maxAddedPoints / 5) * 5;
+  var axisPointsTotal = axisPointsMax - axisPointsMin;
+  
+  var heightOriginal = axisPointsMax !== 0 ? availHeight * (axisPointsMax / axisPointsTotal) : 0;
+  var heightAdded = maxAddedPoints !== 0 ? availHeight * (-axisPointsMin / axisPointsTotal) : 0;
 
     // function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
       // orientation: 0:hor,below, 1:ver:left, 2:hor:above, 3: ver:right
-  
-  this.g.axis(gutter.left, gutter.top + heightOriginal, heightOriginal, 0, maxOriginalY, 0, 1);
-  if (heightAdded) {
-    this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightAdded, 0, -maxAddedY, 0, 1);
-  }
+  var steps = axisPointsTotal / 5;
+
+  this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 1);
+  this.g.axis(width - gutter.right, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 3);
+  this.path(new Path()
+    .M(gutter.left, gutter.top + heightOriginal)
+    .L(width - gutter.right, gutter.top + heightOriginal)
+  );
     
 return chart;
 
