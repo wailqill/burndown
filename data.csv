@@ -14,7 +14,7 @@ Id;Titel;Originalpoäng;Kvarvarande poäng;Status;Typ
 19;Typografi, fallback på standardtypsnitt;5;5;Ej klar;User story
 44;Ej implementerat rutan;1;1;Ej klar;User story
 16;Målgruppsanpassade banners från webparts.;5;5;Ej klar;User story
-12;Målgruppsanpassade topbanners (ämnessidor);5;5;Ej klar;User story
+12;Målgruppsanpassade topbanners (ämnessidor);3;3;Ej klar;User story
 5;Inget navigations-UI om bara en banner;1;1;Ej klar;User story
 8;Relevanta banners / dummies på startsida;3;3;Ej klar;User story
 10;"""Kompetensutveckling"" i huvudmenyn";3;3;Ej klar;User story
