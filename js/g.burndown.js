@@ -20,14 +20,10 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
   }
   
   var gutter = {
-    top: 0,
-    right: 0,
-    bottom: 0,
+    top: 10,
+    right: 10,
+    bottom: 50,
     left: 20
-    // top: 10,
-    // right: 10,
-    // bottom: 50,
-    // left: 20
   };
 
   var chart = this.set();
@@ -35,15 +31,15 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
   var maxOriginalY = max(original);
   var maxAddedY = max(added);
   var totalY = maxAddedY + maxOriginalY;
+  var availHeight = height - gutter.top - gutter.bottom;
   
-  var heightOriginal = maxOriginalY !== 0 ? (height - gutter.top - gutter.bottom) * (maxOriginalY / totalY) : 0;
-  var heightAdded = maxAddedY !== 0 ? (height - gutter.top - gutter.bottom) * (maxAddedY / totalY) : 0;
+  var heightOriginal = maxOriginalY !== 0 ? availHeight * (maxOriginalY / totalY) : 0;
+  var heightAdded = maxAddedY !== 0 ? availHeight * (maxAddedY / totalY) : 0;
 
     // function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
       // orientation: 0:hor,below, 1:ver:left, 2:hor:above, 3: ver:right
   
   this.g.axis(gutter.left, gutter.top + heightOriginal, heightOriginal, 0, maxOriginalY, 0, 1);
-
     
 return chart;
 

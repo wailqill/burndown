@@ -42,6 +42,6 @@ window.addEventListener('load', function () {
     added.push(-total(d.data.slice(countItemsStart), function(p, c) { return p + c.v; }));
   });
 
-  r.g.burndown(0, 0, 500, 500, dates, remaining, added, {});
+  r.g.burndown(0, 0, 500, 400, dates, remaining, added, {});
 
 });
