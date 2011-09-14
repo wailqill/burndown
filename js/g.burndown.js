@@ -85,10 +85,10 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
   }
   
   var lines = this.set();
-  var p;
+  var p, x, y, c = this.g.colors[0];
   for (var i=0, val; val=original[i]; i++) {
-    var x = gutter.left + dx/2 + dx*i,
-        y = origo.y - (val/axisPointsMax) * heightOriginal;
+    x = gutter.left + dx/2 + dx*i;
+    y = origo.y - (val/axisPointsMax) * heightOriginal;
     
     if (p === undefined) {
       p = new Path().M(x, y);
@@ -97,14 +97,23 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
     }
     
     this.g.disc(x, y, 5).attr({
-      fill: this.g.colors[0],
+      fill: c,
       stroke: 'none'
     });
   }
+  // Line
   this.path(p).attr({
-    'stroke': this.g.colors[0],
+    'stroke': c,
     'stroke-width': 2
   });
+  // Shadow
+  p.L(x, origo.y).L(gutter.left + dx/2, origo.y).Z();
+  this.path(p).attr({
+    'stroke': 'none',
+    'fill': c,
+    'opacity': .5
+  });
+  
     
 return chart;
 
