@@ -58,7 +58,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       }
     , points = {}
     , colors = {
-        axis: 'black'
+        axis: 'hsl(0, 0, 40%)'
       }
     ;
   
@@ -79,32 +79,45 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
 
   points.totalAdded = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
   points.originalRemaining = data[0] ? data[0].remaining || 0 : 0;
-  points.uppermostRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining); });
-  points.total = points.totalAdded + points.uppermostRemaining;
-  points.axisDelta = 
-  
+  points.uppermostBaseRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining); }, 0);
+  points.total = points.totalAdded + points.uppermostBaseRemaining;
+  points.axisDelta = Math.round(points.total / (availHeight / 50));
+
+  // If no data. exit.
+  if (points.total === 0)
+    return;
+
   var columnWidth = availWidth / data.length;
+  var base = gutter.top + (availHeight * (points.originalRemaining / points.total));
+  var pointHeight = availHeight / (points.total)
   
-  var chart = this.set(),
-      axis = this.set();
+  var sets = {
+    axis: this.set()
+  };
   
-  // Draw chart axis
-  axis.push(this.path(new Path()
+  // Draw point axis line
+  sets.axis.push(this.path(new Path()
     .move(corners.left, corners.top)
     .line(corners.left, corners.bottom)
-  ));
+  ).attr('stroke', colors.axis));
+  // Draw point axis markings
   
-  // Check if we have data for at least the first day.
-  if (points.total) {
-    
-    var base = gutter.top + (availHeight * (points.originalRemaining / points.total));
-    
-    // Draw base line
-    axis.push(this.path(new Path()
-      .move(corners.left, base)
-      .line(corners.right, base)
-    ));
+  var y = corners.bottom;
+  while (r(y) > gutter.top) {
+    sets.axis.push(this.path(new Path()
+      .move(corners.left - 2, y)
+      .line(corners.left + 2, y)
+    ).attr('stroke', colors.axis));
+    y -= pointHeight;
   }
+    
+  // Draw base line
+  sets.axis.push(this.path(new Path()
+    .move(corners.left, base)
+    .line(corners.right, base)
+  ).attr('stroke', colors.axis));
+  
+  
   
   
   // var maxOriginalPoints = max(original);
@@ -185,7 +198,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   // });
   
     
-return chart;
+return this.set(sets.axis);
 
     chart.push(lines, shades, symbols, axis, columns, dots);
     chart.lines = lines;
