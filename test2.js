@@ -31,7 +31,7 @@ var total = function(a, f) {
 
 window.addEventListener('load', function () {
   var r = Raphael("sprint");
-
+  
   var dates = [];
   var remaining = [];
   var added = [];
@@ -41,7 +41,12 @@ window.addEventListener('load', function () {
     remaining.push(total(d.data.slice(0, countItemsStart), function(p, c) { return p + c.v; }));
     added.push(total(d.data.slice(countItemsStart), function(p, c) { return p + c.v; }));
   });
-
+  
+  // temp real data
+  dates = "2011-09-13 2011-09-14 2011-09-15 2011-09-18 2011-09-19 2011-09-20 2011-09-21 2011-09-22".split(' ');
+  remaining = [146, 144];
+  added = [0, 5];
+  
   r.g.burndown(0, 0, 500, 400, dates, remaining, added, {});
 
 });

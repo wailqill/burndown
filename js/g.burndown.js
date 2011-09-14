@@ -52,7 +52,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
 
     // function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
       // orientation: 0:hor,below, 1:ver:left, 2:hor:above, 3: ver:right
-  var steps = axisPointsTotal / 5;
+  var steps = axisPointsTotal / 10;
 
   this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 1);
   this.g.axis(width - gutter.right, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 3);
@@ -97,11 +97,14 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
     }
     
     this.g.disc(x, y, 5).attr({
-      fill: this.g.colors[1],
-      stroke: 'rgba(0, 0, 0, .5)'
+      fill: this.g.colors[0],
+      stroke: 'none'
     });
   }
-  this.path(p);
+  this.path(p).attr({
+    'stroke': this.g.colors[0],
+    'stroke-width': 2
+  });
     
 return chart;
 
