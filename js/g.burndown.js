@@ -62,16 +62,13 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       }
     ;
   
-  points.totalAdded = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
-  points.originalRemaining = data[0] ? data[0].remaining || 0 : 0;
-  points.total = points.totalAdded + points.originalRemaining;
-  
-  var columnWidth = availWidth / data.length;
-  
-  var d = data.map(function(d, i) {
+  var accAdded = 0;
+  data = data.map(function(d, i) {
+    accAdded += d.added;
     return {
       label: d.label,
       remaining: d.remaining,
+      baseRemaining: d.remaining - accAdded,
       added: d.added,
       coords: {
         left: gutter.left + columnWidth * i,
@@ -79,6 +76,14 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       }
     }
   });
+
+  points.totalAdded = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
+  points.originalRemaining = data[0] ? data[0].remaining || 0 : 0;
+  points.uppermostRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining); });
+  points.total = points.totalAdded + points.uppermostRemaining;
+  points.axisDelta = 
+  
+  var columnWidth = availWidth / data.length;
   
   var chart = this.set(),
       axis = this.set();
