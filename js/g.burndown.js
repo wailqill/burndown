@@ -85,11 +85,23 @@ Raphael.fn.g.burndown = function (x, y, width, height, dates, original, added, o
   }
   
   var lines = this.set();
-  for (var i=0, data; data=original[i]; i++) {
-    var p = new Path().M(dx/2, );
-    for (var j=0, val; val=data[j]; j++)
-      
+  var p;
+  for (var i=0, val; val=original[i]; i++) {
+    var x = gutter.left + dx/2 + dx*i,
+        y = origo.y - (val/axisPointsMax) * heightOriginal;
+    
+    if (p === undefined) {
+      p = new Path().M(x, y);
+    } else {
+      p.L(x, y);
+    }
+    
+    this.g.disc(x, y, 5).attr({
+      fill: this.g.colors[1],
+      stroke: 'rgba(0, 0, 0, .5)'
+    });
   }
+  this.path(p);
     
 return chart;
 
