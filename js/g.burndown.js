@@ -23,7 +23,7 @@
   Path.prototype.toString = function() { return this.path.substr(1); }
   Path.prototype.move = function(x, y) { this.path += " M " + r(x) + " " + r(y); return this; }
   Path.prototype.line = function(x, y) { this.path += " L " + r(x) + " " + r(y); return this; }
-  Path.prototype.clone = function() { this.path += " Z"; return this; }
+  Path.prototype.close = function() { this.path += " Z"; return this; }
 
 
 
@@ -58,7 +58,8 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       }
     , points = {}
     , colors = {
-        axis: 'hsl(0, 0, 40%)'
+        axis: 'hsl(0, 0, 40%)',
+        remaining: 'blue'
       }
     ;
   
@@ -90,7 +91,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   var columnWidth = availWidth / data.length;
   var base = gutter.top + (availHeight * (points.originalRemaining / points.total));
   var pointHeight = availHeight / (points.total)
-  
+
   var sets = {
     axis: this.set()
   };
@@ -117,7 +118,38 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     .line(corners.right, base)
   ).attr('stroke', colors.axis));
   
+  // Draw remaining points line
+  var above = { path: new Path() },
+      below = { path: new Path() };
   
+  for (var i=0,d; d=data[i]; i++) {
+    // Above
+    above.x = gutter.left + (i + .5) * columnWidth;
+    above.y = base - d.baseRemaining * pointHeight;
+    var f = i > 0 ? above.path.line : above.path.move;
+    f.call(above.path, above.x, above.y);
+    
+    // Dots
+    this.circle(above.x, above.y, 4).attr({
+      'fill': colors.remaining,
+      'stroke': 'none'
+    });
+    
+    // Below
+    below.x = gutter.left + (i + .5) * columnWidth;
+    below.y = base - d.baseRemaining * pointHeight;
+    var f = i > 0 ? below.path.line : below.path.move;
+    f.call(below.path, below.x, below.y);
+  }
+  this.path(above.path).attr({
+    'stroke': colors.remaining,
+    'stroke-width': '2px'
+  });
+  above.path.line(above.x, base).line(gutter.left + .5 * columnWidth, base).close();
+  this.path(above.path).attr({
+    'fill': 'rgba(0, 0, 255, .3)',
+    'stroke': 'none'
+  });
   
   
   // var maxOriginalPoints = max(original);
