@@ -1,4 +1,4 @@
-(function() {
+(function(undefined) {
   
   var max = function(a, f) {
     f = f || function(p, c) {
@@ -34,21 +34,6 @@
   Path.prototype.line = function(x, y) { this.path += " L " + r(x) + " " + r(y); return this; }
   Path.prototype.close = function() { this.path += " Z"; return this; }
 
-
-
-
-/**
-
-data = [
-  { label: '2011-09-12', remaining: 7, added: 0 },
-  { label: '2011-09-13', remaining: 7, added: 1 },
-  { label: '2011-09-14', remaining: 5, added: 1 },
-  { label: '2011-09-15', remaining: 2, added: 0 },
-  { label: '2011-09-16', remaining: 0, added: 0 }
-]
-
-**/
-
 Raphael.fn.g.burndown = function (x, y, width, height, data) {
 
   var gutter = {
@@ -76,16 +61,22 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   var accAdded = 0;
   data = data.map(function(d, i) {
     accAdded += d.added || 0;
-    return {
+    var o = {
       label: d.label,
-      remaining: d.remaining,
-      baseRemaining: d.remaining - accAdded,
-      added: d.added || 0,
       coords: {
         left: gutter.left + columnWidth * i,
         center: gutter.left + columnWidth * (i + .5)
       }
     }
+    if (d.remaining !== undefined) {
+      o.remaining = d.remaining;
+      o.baseRemaining = d.remaining - accAdded;
+    }
+    if (d.added !== undefined) {
+      o.added = d.added;
+    }
+    
+    return o;
   });
 
   points.totalAdded             = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
@@ -134,14 +125,6 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     
     point += axis.deltaPoints;
   }
-  
-  // while (r(y) > gutter.top) {
-  //   sets.axis.push(this.path(new Path()
-  //     .move(corners.left - 2, y)
-  //     .line(corners.left + 2, y)
-  //   ).attr('stroke', colors.axis));
-  //   y -= pointHeight;
-  // }
     
   // Draw base line
   sets.axis.push(this.path(new Path()
@@ -149,29 +132,31 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     .line(corners.right, base)
   ).attr('stroke', colors.axis));
   
-  return
   // Draw remaining points line
   var above = { path: new Path() },
       below = { path: new Path() };
   
   for (var i=0,d; d=data[i]; i++) {
-    // Above
-    above.x = gutter.left + (i + .5) * columnWidth;
-    above.y = base - d.baseRemaining * pointHeight;
-    var f = i > 0 ? above.path.line : above.path.move;
-    f.call(above.path, above.x, above.y);
+    if (d.baseRemaining !== undefined) {
+
+      // Above
+      above.x = gutter.left + (i + .5) * columnWidth;
+      above.y = base - d.baseRemaining * axis.deltaY;
+      var f = i > 0 ? above.path.line : above.path.move;
+      f.call(above.path, above.x, above.y);
     
-    // Dots
-    this.circle(above.x, above.y, 4).attr({
-      'fill': colors.remaining,
-      'stroke': 'none'
-    });
-    
-    // Below
-    below.x = gutter.left + (i + .5) * columnWidth;
-    below.y = base - d.baseRemaining * pointHeight;
-    var f = i > 0 ? below.path.line : below.path.move;
-    f.call(below.path, below.x, below.y);
+      // Dots
+      this.circle(above.x, above.y, 4).attr({
+        'fill': colors.remaining,
+        'stroke': 'none'
+      });
+  
+      // Below
+      below.x = gutter.left + (i + .5) * columnWidth;
+      below.y = base - d.baseRemaining * axis.deltaY;
+      var f = i > 0 ? below.path.line : below.path.move;
+      f.call(below.path, below.x, below.y);
+    }
   }
   this.path(above.path).attr({
     'stroke': colors.remaining,
@@ -316,4 +301,3 @@ return this.set(sets.axis);
 };
 
 })();
-
