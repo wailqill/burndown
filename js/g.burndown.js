@@ -160,6 +160,9 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     ).attr({
       'stroke': colors.columnHelper
     });
+    
+    // Draw dates as labels
+    this.text(x, corners.bottom + gutter.bottom/2, d.label).rotate(300);
 
     if (d.baseRemaining !== undefined) {
 
