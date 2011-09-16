@@ -58,7 +58,8 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
         remaining: 'blue',
         added: 'red',
         optimal: 'green',
-        actual: 'purple'
+        actual: 'purple',
+        columnHelper: 'rgba(0, 0, 0, .1)'
       }
     ;
   
@@ -146,15 +147,25 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     .line(corners.right, baseAdded)
   ).attr('stroke', colors.axis));
   
-  // Draw remaining points line
   var above = { path: new Path() },
       below = { path: new Path() };
   
   for (var i=0,d; d=data[i]; i++) {
+    var x = gutter.left + (i + .5) * columnWidth;
+    
+    // Draw column helper lines
+    this.path(new Path()
+      .move(x + .5 * columnWidth, corners.top)
+      .line(x + .5 * columnWidth, corners.bottom)
+    ).attr({
+      'stroke': colors.columnHelper
+    });
+
     if (d.baseRemaining !== undefined) {
 
+      above.x = below.x = x;
+      
       // Above
-      above.x = gutter.left + (i + .5) * columnWidth;
       above.y = base - d.baseRemaining * axis.deltaY;
       var f = i > 0 ? above.path.line : above.path.move;
       f.call(above.path, above.x, above.y);
@@ -166,7 +177,6 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       });
   
       // Below
-      below.x = gutter.left + (i + .5) * columnWidth;
       below.y = base + d.accAdded * axis.deltaY;
       var f = i > 0 ? below.path.line : below.path.move;
       f.call(below.path, below.x, below.y);
@@ -178,6 +188,15 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       });
     }
   }
+  
+  // Draw optimal burn down line
+  this.path(new Path()
+    .move(corners.left + .5 * columnWidth, base - data[0].baseRemaining * axis.deltaY)
+    .line(corners.right - .5 * columnWidth, base + accAdded * axis.deltaY)
+  ).attr({
+    'stroke': colors.optimal
+  }).toBack();
+
   this.path(above.path).attr({
     'stroke': colors.remaining,
     'stroke-width': '2px'
@@ -187,7 +206,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'fill': colors.remaining,
     'stroke': 'none',
     'opacity': colors.shadowOpacity
-  });
+  }).toBack();
   
   this.path(below.path).attr({
     'stroke': colors.added,
@@ -198,17 +217,9 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'fill': colors.added,
     'stroke': 'none',
     'opacity': colors.shadowOpacity
-  });
+  }).toBack();
   
-  
-  // Draw optimal burn down line
-  this.path(new Path()
-    .move(corners.left + .5 * columnWidth, base - data[0].baseRemaining * axis.deltaY)
-    .line(corners.right - .5 * columnWidth, base + accAdded * axis.deltaY)
-  ).attr({
-    'stroke': colors.optimal
-  });
-  
+
   
   
   
