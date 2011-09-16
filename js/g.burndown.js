@@ -101,8 +101,8 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
 
   var columnWidth = availWidth / data.length;
   var base        = gutter.top + (availHeight * (axis.upPoints / axis.totalPoints));
-  // var pointHeight = availHeight / (points.total)
-
+  var baseAdded   = base + accAdded * axis.deltaY;
+  
   var sets = {
     axis: this.set()
   };
@@ -135,6 +135,15 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   sets.axis.push(this.path(new Path()
     .move(corners.left, base)
     .line(corners.right, base)
+  ).attr({
+    'stroke': colors.axis,
+    'opacity': .5 
+  }));
+
+  // Draw accAdded base line
+  sets.axis.push(this.path(new Path()
+    .move(corners.left, baseAdded)
+    .line(corners.right, baseAdded)
   ).attr('stroke', colors.axis));
   
   // Draw remaining points line
@@ -163,12 +172,10 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       f.call(below.path, below.x, below.y);
       
       // Dots
-      if (d.accAdded > 0) {
-        this.circle(below.x, below.y, 4).attr({
-          'fill': colors.added,
-          'stroke': 'none'
-        });
-      }
+      this.circle(below.x, below.y, 4).attr({
+        'fill': colors.added,
+        'stroke': 'none'
+      });
     }
   }
   this.path(above.path).attr({
