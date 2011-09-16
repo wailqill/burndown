@@ -17,6 +17,15 @@
   }
 
 
+  var calculatePointDelta = function(total) {
+    var markings = total, delta = 0;
+    while (markings > 16) {
+      markings = Math.round(markings / 4) * 2;
+      delta = Math.ceil(total / markings);
+    }
+    return delta;
+  }
+
   var Path = function() {
     this.path = "";
   }
@@ -57,6 +66,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       , left: gutter.left
       }
     , points = {}
+    , axis = {}
     , colors = {
         axis: 'hsl(0, 0, 40%)',
         remaining: 'blue'
@@ -65,12 +75,12 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   
   var accAdded = 0;
   data = data.map(function(d, i) {
-    accAdded += d.added;
+    accAdded += d.added || 0;
     return {
       label: d.label,
       remaining: d.remaining,
       baseRemaining: d.remaining - accAdded,
-      added: d.added,
+      added: d.added || 0,
       coords: {
         left: gutter.left + columnWidth * i,
         center: gutter.left + columnWidth * (i + .5)
@@ -78,19 +88,24 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     }
   });
 
-  points.totalAdded = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
-  points.originalRemaining = data[0] ? data[0].remaining || 0 : 0;
+  points.totalAdded             = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
+  points.originalRemaining      = data[0] ? data[0].remaining || 0 : 0;
   points.uppermostBaseRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining || 0); }, 0);
-  points.total = points.totalAdded + points.uppermostBaseRemaining;
-  points.axisDelta = Math.round(points.total / (availHeight / 50));
+  points.total                  = points.totalAdded + points.uppermostBaseRemaining;
+
+  axis.deltaPoints              = calculatePointDelta(points.total);
+  axis.upPoints                 = Math.ceil(points.uppermostBaseRemaining / axis.deltaPoints) * axis.deltaPoints;
+  axis.downPoints               = Math.ceil(points.totalAdded / axis.deltaPoints) * axis.deltaPoints;
+  axis.totalPoints              = axis.upPoints + axis.downPoints;
+  axis.deltaY                   = availHeight / (axis.upPoints + axis.downPoints);
 
   // If no data. exit.
   if (points.total === 0)
     return;
 
   var columnWidth = availWidth / data.length;
-  var base = gutter.top + (availHeight * (points.originalRemaining / points.total));
-  var pointHeight = availHeight / (points.total)
+  var base        = gutter.top + (availHeight * (axis.upPoints / axis.totalPoints));
+  // var pointHeight = availHeight / (points.total)
 
   var sets = {
     axis: this.set()
@@ -101,16 +116,32 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     .move(corners.left, corners.top)
     .line(corners.left, corners.bottom)
   ).attr('stroke', colors.axis));
-  // Draw point axis markings
   
-  var y = corners.bottom;
-  while (r(y) > gutter.top) {
+  // Draw point axis markings
+  var point = -axis.downPoints;
+  while (point <= axis.upPoints) {
+    // Calc y pos
+    var y = base - point*axis.deltaY;
+    
+    // Draw line
     sets.axis.push(this.path(new Path()
       .move(corners.left - 2, y)
       .line(corners.left + 2, y)
     ).attr('stroke', colors.axis));
-    y -= pointHeight;
+    
+    // Draw text
+    sets.axis.push(this.text(gutter.left / 2, y, Math.abs(point)));
+    
+    point += axis.deltaPoints;
   }
+  
+  // while (r(y) > gutter.top) {
+  //   sets.axis.push(this.path(new Path()
+  //     .move(corners.left - 2, y)
+  //     .line(corners.left + 2, y)
+  //   ).attr('stroke', colors.axis));
+  //   y -= pointHeight;
+  // }
     
   // Draw base line
   sets.axis.push(this.path(new Path()
@@ -118,6 +149,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     .line(corners.right, base)
   ).attr('stroke', colors.axis));
   
+  return
   // Draw remaining points line
   var above = { path: new Path() },
       below = { path: new Path() };
