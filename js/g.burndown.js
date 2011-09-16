@@ -53,12 +53,10 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     , points = {}
     , axis = {}
     , colors = {
-        shadowOpacity: .7,
+        shadowOpacity: .3,
         axis: 'hsl(0, 0, 40%)',
         remaining: 'blue',
-        remainingShadow: 'rgba(0, 0, 255, .2)',
-        added: 'red',
-        addedShadow: 'rgba(255, 0, 0, .5)'
+        added: 'red'
       }
     ;
   
@@ -104,7 +102,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   var baseAdded   = base + accAdded * axis.deltaY;
   
   var sets = {
-    axis: this.set()
+    axis: this.set(),
   };
   
   // Draw point axis line
@@ -184,8 +182,9 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   });
   above.path.line(above.x, base).line(gutter.left + .5 * columnWidth, base).close();
   this.path(above.path).attr({
-    'fill': colors.remainingShadow,
-    'stroke': 'none'
+    'fill': colors.remaining,
+    'stroke': 'none',
+    'opacity': colors.shadowOpacity
   });
   
   this.path(below.path).attr({
@@ -194,9 +193,10 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   });
   below.path.line(below.x, base).line(gutter.left + .5 * columnWidth, base).close();
   this.path(below.path).attr({
-    'fill': colors.addedShadow,
-    'stroke': 'none'
-  }).lighter(5);
+    'fill': colors.added,
+    'stroke': 'none',
+    'opacity': colors.shadowOpacity
+  });
   
   
   
