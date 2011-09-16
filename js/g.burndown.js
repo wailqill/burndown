@@ -80,7 +80,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
 
   points.totalAdded = data.reduce(function(t, c) { return t + (c.added || 0); }, 0);
   points.originalRemaining = data[0] ? data[0].remaining || 0 : 0;
-  points.uppermostBaseRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining); }, 0);
+  points.uppermostBaseRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining || 0); }, 0);
   points.total = points.totalAdded + points.uppermostBaseRemaining;
   points.axisDelta = Math.round(points.total / (availHeight / 50));
 
