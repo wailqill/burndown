@@ -56,7 +56,9 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
         shadowOpacity: .3,
         axis: 'hsl(0, 0, 40%)',
         remaining: 'blue',
-        added: 'red'
+        added: 'red',
+        optimal: 'green',
+        actual: 'purple'
       }
     ;
   
@@ -180,7 +182,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'stroke': colors.remaining,
     'stroke-width': '2px'
   });
-  above.path.line(above.x, base).line(gutter.left + .5 * columnWidth, base).close();
+  above.path.line(above.x, base).line(corners.left + .5 * columnWidth, base).close();
   this.path(above.path).attr({
     'fill': colors.remaining,
     'stroke': 'none',
@@ -191,13 +193,21 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'stroke': colors.added,
     'stroke-width': '2px'
   });
-  below.path.line(below.x, base).line(gutter.left + .5 * columnWidth, base).close();
+  below.path.line(below.x, base).line(corners.left + .5 * columnWidth, base).close();
   this.path(below.path).attr({
     'fill': colors.added,
     'stroke': 'none',
     'opacity': colors.shadowOpacity
   });
   
+  
+  // Draw optimal burn down line
+  this.path(new Path()
+    .move(corners.left + .5 * columnWidth, base - data[0].baseRemaining * axis.deltaY)
+    .line(corners.right - .5 * columnWidth, base + accAdded * axis.deltaY)
+  ).attr({
+    'stroke': colors.optimal
+  });
   
   
   
