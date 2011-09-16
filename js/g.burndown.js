@@ -53,8 +53,12 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     , points = {}
     , axis = {}
     , colors = {
+        shadowOpacity: .7,
         axis: 'hsl(0, 0, 40%)',
-        remaining: 'blue'
+        remaining: 'blue',
+        remainingShadow: 'rgba(0, 0, 255, .2)',
+        added: 'red',
+        addedShadow: 'rgba(255, 0, 0, .5)'
       }
     ;
   
@@ -63,6 +67,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     accAdded += d.added || 0;
     var o = {
       label: d.label,
+      accAdded: accAdded,
       coords: {
         left: gutter.left + columnWidth * i,
         center: gutter.left + columnWidth * (i + .5)
@@ -153,9 +158,17 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   
       // Below
       below.x = gutter.left + (i + .5) * columnWidth;
-      below.y = base - d.baseRemaining * axis.deltaY;
+      below.y = base + d.accAdded * axis.deltaY;
       var f = i > 0 ? below.path.line : below.path.move;
       f.call(below.path, below.x, below.y);
+      
+      // Dots
+      if (d.accAdded > 0) {
+        this.circle(below.x, below.y, 4).attr({
+          'fill': colors.added,
+          'stroke': 'none'
+        });
+      }
     }
   }
   this.path(above.path).attr({
@@ -164,87 +177,23 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   });
   above.path.line(above.x, base).line(gutter.left + .5 * columnWidth, base).close();
   this.path(above.path).attr({
-    'fill': 'rgba(0, 0, 255, .3)',
+    'fill': colors.remainingShadow,
     'stroke': 'none'
   });
   
+  this.path(below.path).attr({
+    'stroke': colors.added,
+    'stroke-width': '2px'
+  });
+  below.path.line(below.x, base).line(gutter.left + .5 * columnWidth, base).close();
+  this.path(below.path).attr({
+    'fill': colors.addedShadow,
+    'stroke': 'none'
+  }).lighter(5);
   
-  // var maxOriginalPoints = max(original);
-  // var maxAddedPoints = max(added);
-  // var maxTotalPoints = maxAddedPoints + maxOriginalPoints;
-  // var availHeight = height - gutter.top - gutter.bottom;
-  // var availWidth = width - gutter.left - gutter.right;
-  // 
-  // var axisPointsMax = Math.ceil(maxOriginalPoints / 5) * 5;
-  // var axisPointsMin = Math.floor(-maxAddedPoints / 5) * 5;
-  // var axisPointsTotal = axisPointsMax - axisPointsMin;
-  // 
-  // var heightOriginal = axisPointsMax !== 0 ? availHeight * (axisPointsMax / axisPointsTotal) : 0;
-  // var heightAdded = maxAddedPoints !== 0 ? availHeight * (-axisPointsMin / axisPointsTotal) : 0;
-  // 
-  //   // function (x, y, length, from, to, steps, orientation, labels, type, dashsize) {
-  //     // orientation: 0:hor,below, 1:ver:left, 2:hor:above, 3: ver:right
-  // var steps = axisPointsTotal / 10;
-  // 
-  // this.g.axis(gutter.left, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 1);
-  // this.g.axis(width - gutter.right, gutter.top + heightOriginal + heightAdded, heightOriginal + heightAdded, axisPointsMin, axisPointsMax, steps, 3);
-  // 
-  // var origo = {
-  //   x: gutter.left,
-  //   y: gutter.top + heightOriginal
-  // };
-  // 
-  // this.path(new Path()
-  //   .M(origo.x, origo.y)
-  //   .L(width - gutter.right, origo.y)
-  // );
-  // 
-  // var dx = availWidth/dates.length;
-  // 
-  // for (var i=0, d, x; (d=dates[i]) && (x=gutter.left+i*dx); i++) {
-  //   // Text
-  //   var text = this.text(x+dx/2, height-40, d);
-  //   text.rotate(31).attr({
-  //     'font-size': '12px'
-  //   });
-  //   
-  //   if (i === 0) continue;
-  //   
-  //   // Line
-  //   this.path(new Path().M(x, gutter.top).L(x, height - gutter.bottom)).attr({
-  //     opacity: .5
-  //   });
-  // }
-  // 
-  // var lines = this.set();
-  // var p, x, y, c = this.g.colors[0];
-  // for (var i=0, val; val=original[i]; i++) {
-  //   x = gutter.left + dx/2 + dx*i;
-  //   y = origo.y - (val/axisPointsMax) * heightOriginal;
-  //   
-  //   if (p === undefined) {
-  //     p = new Path().M(x, y);
-  //   } else {
-  //     p.L(x, y);
-  //   }
-  //   
-  //   this.g.disc(x, y, 5).attr({
-  //     fill: c,
-  //     stroke: 'none'
-  //   });
-  // }
-  // // Line
-  // this.path(p).attr({
-  //   'stroke': c,
-  //   'stroke-width': 2
-  // });
-  // // Shadow
-  // p.L(x, origo.y).L(gutter.left + dx/2, origo.y).Z();
-  // this.path(p).attr({
-  //   'stroke': 'none',
-  //   'fill': c,
-  //   'opacity': .5
-  // });
+  
+  
+  
   
     
 return this.set(sets.axis);
