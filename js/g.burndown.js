@@ -215,12 +215,12 @@
       'fill': colors.remaining,
       'stroke': 'none',
       'opacity': colors.shadowOpacity
-    });
+    }).toBack();
     this.path(paths.bottomShadow).attr({
       'fill': colors.added,
       'stroke': 'none',
       'opacity': colors.shadowOpacity
-    });
+    }).toBack();
     this.path(paths.top).attr({
       'stroke': colors.remaining,
       'stroke-width': '2px'
@@ -236,8 +236,32 @@
       .move(data[0].coords.center, data[0].coords.top)
       .line(corners.right - .5 * columnWidth, baseOriginal + accAdded * axis.deltaY)
     ).attr({
+      'stroke': colors.optimal,
+      'stroke-width': .5,
+      'stroke-dasharray': '- '
+    }).toBack();
+
+    // Trend line.
+    var withPoints = data.filter(function(d) { return d.hasData; });
+    var points = {
+      x1: withPoints[0].coords.center,
+      y1: withPoints[0].coords.top,
+      x2: withPoints.reduce(function(t, d) { return t + d.coords.center; }, 0),
+      y2: withPoints.reduce(function(t, d) { return t + d.coords.top; }, 0)
+    }
+    var ratio = (points.y2 - points.y1) / (points.x2 - points.x1);
+    var x = baseAdded / ratio;
+    
+    this.path(new Path()
+      .move(points.x1, points.y1)
+      .line(x, baseAdded)
+    ).attr({
       'stroke': colors.optimal
     }).toBack();
+
+
+
+
 
   };
   
