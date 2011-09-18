@@ -50,6 +50,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       , bottom: gutter.top + availHeight
       , left: gutter.left
       }
+    , columnWidth = availWidth / data.length
     , points = {}
     , axis = {}
     , colors = {
@@ -90,19 +91,18 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   points.uppermostBaseRemaining = data.reduce(function(t, c) { return Math.max(t, c.baseRemaining || 0); }, 0);
   points.total                  = points.totalAdded + points.uppermostBaseRemaining;
 
+  // If no data. exit.
+  if (points.total === 0)
+    return;
+
   axis.deltaPoints              = calculatePointDelta(points.total);
   axis.upPoints                 = Math.ceil(points.uppermostBaseRemaining / axis.deltaPoints) * axis.deltaPoints;
   axis.downPoints               = Math.ceil(points.totalAdded / axis.deltaPoints) * axis.deltaPoints;
   axis.totalPoints              = axis.upPoints + axis.downPoints;
   axis.deltaY                   = availHeight / (axis.upPoints + axis.downPoints);
 
-  // If no data. exit.
-  if (points.total === 0)
-    return;
-
-  var columnWidth = availWidth / data.length;
-  var base        = gutter.top + (availHeight * (axis.upPoints / axis.totalPoints));
-  var baseAdded   = base + accAdded * axis.deltaY;
+  var baseOriginal  = gutter.top + (availHeight * (axis.upPoints / axis.totalPoints));
+  var baseAdded     = baseOriginal + accAdded * axis.deltaY;
   
   var sets = {
     axis: this.set(),
@@ -118,7 +118,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   var point = -axis.downPoints;
   while (point <= axis.upPoints) {
     // Calc y pos
-    var y = base - point*axis.deltaY;
+    var y = baseOriginal - point*axis.deltaY;
     
     // Draw line
     sets.axis.push(this.path(new Path()
@@ -134,8 +134,8 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     
   // Draw base line
   sets.axis.push(this.path(new Path()
-    .move(corners.left, base)
-    .line(corners.right, base)
+    .move(corners.left, baseOriginal)
+    .line(corners.right, baseOriginal)
   ).attr({
     'stroke': colors.axis,
     'opacity': .5 
@@ -169,7 +169,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       above.x = below.x = x;
       
       // Above
-      above.y = base - d.baseRemaining * axis.deltaY;
+      above.y = baseOriginal - d.baseRemaining * axis.deltaY;
       var f = i > 0 ? above.path.line : above.path.move;
       f.call(above.path, above.x, above.y);
     
@@ -180,7 +180,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
       });
   
       // Below
-      below.y = base + d.accAdded * axis.deltaY;
+      below.y = baseOriginal + d.accAdded * axis.deltaY;
       var f = i > 0 ? below.path.line : below.path.move;
       f.call(below.path, below.x, below.y);
       
@@ -194,8 +194,8 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
   
   // Draw optimal burn down line
   this.path(new Path()
-    .move(corners.left + .5 * columnWidth, base - data[0].baseRemaining * axis.deltaY)
-    .line(corners.right - .5 * columnWidth, base + accAdded * axis.deltaY)
+    .move(corners.left + .5 * columnWidth, baseOriginal - data[0].baseRemaining * axis.deltaY)
+    .line(corners.right - .5 * columnWidth, baseOriginal + accAdded * axis.deltaY)
   ).attr({
     'stroke': colors.optimal
   }).toBack();
@@ -204,7 +204,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'stroke': colors.remaining,
     'stroke-width': '2px'
   });
-  above.path.line(above.x, base).line(corners.left + .5 * columnWidth, base).close();
+  above.path.line(above.x, baseOriginal).line(corners.left + .5 * columnWidth, baseOriginal).close();
   this.path(above.path).attr({
     'fill': colors.remaining,
     'stroke': 'none',
@@ -215,7 +215,7 @@ Raphael.fn.g.burndown = function (x, y, width, height, data) {
     'stroke': colors.added,
     'stroke-width': '2px'
   });
-  below.path.line(below.x, base).line(corners.left + .5 * columnWidth, base).close();
+  below.path.line(below.x, baseOriginal).line(corners.left + .5 * columnWidth, baseOriginal).close();
   this.path(below.path).attr({
     'fill': colors.added,
     'stroke': 'none',
