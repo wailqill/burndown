@@ -116,6 +116,8 @@
   
     var sets = {
       axis: this.set(),
+      columns: this.set(),
+      dots: this.set()
     };
   
     // Draw point axis line
@@ -180,16 +182,18 @@
       if (!d.hasData) continue;
     
       // Dot remaining
-      this.circle(d.coords.center, d.coords.top, 4).attr({
+      var dot = this.circle(d.coords.center, d.coords.top, 4).attr({
         'fill': colors.remaining,
         'stroke': 'none'
       });
+      dot[0].setAttribute('data-points', d.remaining);
+      sets.dots.push(dot);
     
       // Dot added
-      this.circle(d.coords.center, d.coords.bottom, 4).attr({
+      sets.dots.push(this.circle(d.coords.center, d.coords.bottom, 4).attr({
         'fill': colors.added,
         'stroke': 'none'
-      });
+      }));
     
       // Find path function to use
       var f = i === 0 ? Path.prototype.move : Path.prototype.line;
@@ -205,6 +209,16 @@
       }
       paths.topShadow.line(d.coords.center, d.coords.top);
       paths.bottomShadow.line(d.coords.center, d.coords.bottom);
+      
+      if (i < data.length - 1) {
+        // Create column
+        var col = this.rect(d.coords.left, corners.top, d.coords.right - d.coords.left, corners.bottom).attr({
+          'fill': '#fff',
+          'opacity': .0001
+        });
+        col[0].setAttribute('data-index', i);
+        sets.columns.push(col);
+      }
     }
     
     var lastWithData = data.filter(function(d){ return d.hasData; }).pop();
@@ -259,10 +273,22 @@
       'stroke': colors.optimal
     }).toBack();
 
+    var self = this;
+    sets.columns
+      .mouseover(function() {
+        this.tag = self.set();
+        var d = data[this[0].getAttribute('data-index')];
+        if (!d) return false;
+        this.tag.push(self.g.tag(d.coords.center, d.coords.top, d.remaining, 30, 7));
+        this.tag.push(self.g.tag(d.coords.center, d.coords.bottom, d.accAdded, 30, 7));
+      })
+      .mouseout(function() {
+        this.tag.remove();
+      });
 
+    var chart = this.set(sets.axis, sets.dots);
 
-
-
+    return chart;
   };
   
 })();
