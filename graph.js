@@ -12,5 +12,5 @@ var data = [
 
 window.addEventListener('load', function () {
   var r = Raphael("sprint");
-  r.g.burndown(0, 0, 500, 400, data, {});
+  r.g.burndown(0, 0, 700, 500, data, {});
 });

@@ -1,5 +1,5 @@
 body {
-  background: #999;
+  background: #fff;
   font: 100.01% "Fontin Sans", Fontin-Sans, "Myriad Pro", "Lucida Grande", "Lucida Sans Unicode", Lucida, Verdana, Helvetica, sans-serif;
   color: #000;
   margin: 10px 0 0 0;
@@ -7,13 +7,13 @@ body {
   text-align: center;
 }
 #sprint {
-  background: #eee;
+  border: 1px solid #666;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
-  -webkit-box-shadow: 0 1px 3px #666;
+  -webkit-box-shadow: 0 1px 5px #666;
   margin: 0 auto;
-  width: 500px;
-  height: 400px;
+  width: 700px;
+  height: 500px;
 }
 p {
   text-align: left;
