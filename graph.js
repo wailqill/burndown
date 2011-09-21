@@ -4,7 +4,7 @@ var data = [
   { label: '2011-09-15', remaining: 110, added: 1 },
   { label: '2011-09-16', remaining: 101 },
   { label: '2011-09-19', remaining: 94, added: 3 },
-  { label: '2011-09-20' },
+  { label: '2011-09-20', remaining: 83, added: 3 },
   { label: '2011-09-21' },
   { label: '2011-09-22' },
   { label: '2011-09-23' }
