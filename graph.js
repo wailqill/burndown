@@ -6,7 +6,7 @@ var data = [
   { label: '2011-09-19', remaining: 94, added: 3 },
   { label: '2011-09-20', remaining: 83, added: 3 },
   { label: '2011-09-21', remaining: 79 },
-  { label: '2011-09-22' },
+  { label: '2011-09-22', remaining: 66, added: 3 },
   { label: '2011-09-23' }
 ]
 
