@@ -8,7 +8,18 @@ var data = [
   { label: '2011-09-21', remaining: 79 },
   { label: '2011-09-22', remaining: 66, added: 3 },
   { label: '2011-09-23', remaining: 24 }
-]
+];
+
+var data = [
+  { label: 'Initial', remaining: 100 },
+  { label: '2011-09-26' },
+  { label: '2011-09-27' },
+  { label: '2011-09-28' },
+  { label: '2011-09-29' },
+  { label: '2011-09-30' }
+];
+
+
 
 window.addEventListener('load', function () {
   var r = Raphael("sprint");
