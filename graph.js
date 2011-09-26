@@ -11,7 +11,7 @@ var data = [
 ];
 
 var data = [
-  { label: 'Initial', remaining: 100 },
+  { label: 'Initial', remaining: 96 },
   { label: '2011-09-26' },
   { label: '2011-09-27' },
   { label: '2011-09-28' },
