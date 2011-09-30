@@ -15,7 +15,7 @@ var data = [
   { label: '2011-09-26', remaining: 79 },
   { label: '2011-09-27', remaining: 56 },
   { label: '2011-09-28', remaining: 43 },
-  { label: '2011-09-29' },
+  { label: '2011-09-29', remaining: 15 },
   { label: '2011-09-30' }
 ];
 
